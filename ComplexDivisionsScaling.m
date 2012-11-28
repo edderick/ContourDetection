@@ -1,15 +1,24 @@
 SetUp
 
-timing = zeros(divisions, 1);
+iterations = 10;
+step = 5;
 
-for divisions = 1:5:50
-    divisions
+timing = zeros(iterations, 2);
+
+figure(2)
+axis square
+
+for i = 1:iterations
+    divisions = i * step
+    
+    timing(i, 1) = divisions;
     
     tic
     contour = ComplexDPA(divisions, im, contour1, contour2);
-    timing(((divisions -1) / 5) +1) = toc
+    timing(i, 2) = toc
     
 end
 
-%PlotContour(contour, 'g-');
+
+PlotContour(timing, 'g-+');
 
