@@ -91,10 +91,9 @@ efficient.
 
 \section{Method}
 For this project, I chose to use Matlab as it provides good matrix and vector
-manipulation functionality. 
-
-When approaching this task, I broke it up into several scripts and functions,
-each with a single clearly defined purpose.  
+manipulation functionality. When approaching the task, I broke it up into
+several scripts and functions, each with a single clearly defined purpose, to
+ensure clarity and ease of resuse.  
 
 \subsection{Search Space Extraction}
 In my Matlab code, the function \em GenerateSearchSpace \em takes in a number of
@@ -116,44 +115,75 @@ Gaussian sampling and sampled the pixels surrounding the rounded pixel with
 weights proportional to the distance from the point.
 
 I then inverted the matrix of intensities to enable the minimization algorithm
-to detect the line. I also added a low-pass filter to see what difference it
-would make.  
+to detect the line. I also added a low-pass filter that could be configured to
+drop all pixels below a certain intensity.  
 
 \subsection{Dynamic Programming Search}
 I began by creating a simple dynamic programming algorithm based on the on in
 the slides provided. \em reference? \em This algorithm attempted to minimise
-intensity, finding the white pixels of the original image, and ensure
-continuity, producing a line. 
+intensity - finding the white pixels of the original image, and ensure
+continuity - producing a line. 
 
-The algorithm built up two dimensional energy and position matrices by finding
-the minimum energy required to get to each point, based on the minimum energy to
-get to the previous points, and the energy at the point. When the matrices were
-full, a contour was produced by back-tracking over the position matrix. I
-designed my implementation to be as modular as possible to enable easy debugging
-and extension.
+I wrote an energy function based exactly on the slides, it takes in the matrix
+of intensities (to allow it to use the intensity for each point) and two points,
+and returns a scalar energy value. I created a position function in a similar
+manner, this function takes the intensities, the energy matrix and a single
+point, to produce a position and energy value, it makes use of the energy
+function. The position function is then called from the main dynamic programming
+function, for each point.
+
+The algorithm builds up two dimensional energy and position matrices by finding
+the minimum energy required to get to each point. The values were  based on the
+minimum energy to get to the previous points, and the energy at the point. When
+the matrices are full, a contour is produced by back-tracking over the
+position matrix. I designed my implementation to be as modular as possible to
+enable easy debugging and extension.
 
 Once I had a this solution working, I began extending it to implement the
 algorithm defined in the specification. \em reference? \em This required the
 energy and position matrices being expanded into the third dimension to
 represent all of the possible points that could be the next point in the line.
-It also meant adding an extra level of looping to the algorithm as all
-possibilities of the next point had to be considered as well as the previous
-points. This more complex algorithm ensures that straight lines are 
+The energy and position functions each gained an extra parameter, the next point
+being considered.  It also meant adding an extra level of looping to the
+algorithm as all possibilities of the next point had to be considered as well as
+the previous points. This more complex algorithm ensures that straight lines are
 favoured.
 
 \section{Results}
-
 Both of the algorithms were able to produce a contour that matched the outline
 of the tongue. The output produced by the two algorithms can be seen in
-\em Appendix XYZ \em.
+\em Appendix XYZ \em. As can be seen, the line produced by the more complex
+algorithm gave a smoother line than the simple algorithm.
 
 \subsection{Scaling}
+I ran the algorithm for a range of number of divisions (M), I found that the
+algorithm doesn't scale well. As the numbers get larger, the amount of time
+taken quickly becomes infeasible. Emperically executions took severy minutes to
+complete, theoretically they would soon take years to halt. This is expected
+since the algorithm contains three nested loops whose execution time is
+proportional to the size of M. The expected time complexity is $O(n^3)$, the
+graph seen in \em Appendix IJK \em appears to agree with the theory. 
 
 \subsection{Varying Lambda}
+Varying the value of lambda affects how much influence the parts of the
+algorithm have on the energy associated with a point. If lambda is small, then
+the energy at a given point is most important; if it is large then the
+smoothness of the line is more important.
+
+\em Appendix LMNOP \em show various levels of lambda. When lambda is zero, the
+energy function is simply the intensity of the associated pixel. When lambda is
+one, the energy is based entirely on how straight the contour formed by the
+three points is. It would seem to be fairly instance specific as to the ideal
+value of lambda.
 
 \subsection{Initialisation}
 
 \subsection{Different Images}
+I also ran the algorithm on different images. The first of these was an image of
+an aircrafts vapour trail (Appendix ABC).
+
+\em I tried a very jagged image to show that the smoothing function wasn't
+always applicable \em 
 
 \section{Conclusion}
 
