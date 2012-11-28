@@ -72,7 +72,11 @@
 		\maketitle
 		\begin{abstract}
 
-			This is an abstract, it's kinda like modern art...
+Dynamic programming can be used to perform contour detection in a feasible
+period of time. In this project, a dynamic programming algorithm was created for
+exracting a tongue from an X-ray image. The algorithm was tested to see how it
+scales with the number of divisions, how it performs with varying lambda and how
+it performed of different images. 
 
 		\end{abstract}
 	\end{@twocolumnfalse}
@@ -81,7 +85,9 @@
 \section{Introduction}
 Dynamic programming is a method of reducing a search space when finding an
 optimum solution to a complex problem. It relies on the fact that the problem
-can be broken up into smaller, simpler problems. 
+can be broken up into smaller, simpler problems. Compared to the brute force
+method of evaluating all possible contours, dynamic programming is very
+efficient.
 
 \section{Method}
 For this project, I chose to use Matlab as it provides good matrix and vector
@@ -109,15 +115,32 @@ this by creating a function \em MultiSample \em which was loosely based on a
 Gaussian sampling and sampled the pixels surrounding the rounded pixel with
 weights proportional to the distance from the point.
 
-I then implemented 
+I then inverted the matrix of intensities to enable the minimization algorithm
+to detect the line. I also added a low-pass filter to see what difference it
+would make.  
 
 \subsection{Dynamic Programming Search}
+I began by creating a simple dynamic programming algorithm based on the on in
+the slides provided. \em reference? \em This algorithm attempted to minimise
+intensity, to find the white pixels of the original image, and ensure
+continuity, to ensure that the line was actually a line. 
+
+The algorithm built up two dimensional energy and position matrices by finding
+the minimum energy required to get to each point, based on the minimums to get
+to the previous points. It then backtracked from the lowest intensity,
+producing a contour. I designed my implementation to be as modular as possible
+to enable easy debugging and extension.
+
+Once I had a this solution working, I began extending it to implement the
+algorithm defined in the specification. \em reference? \em This required the
+energy and position matrices being expanded into the third dimension to
+represent all of the possible points that could be the next point in the line.  
 
 \section{Results}
 
 \subsection{Scaling}
 
-\subsection{Varying Llambda}
+\subsection{Varying Lambda}
 
 \subsection{Initialisation}
 
