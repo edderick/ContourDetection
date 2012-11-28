@@ -1,7 +1,7 @@
 function contour = SimpleBacktrack(Position, Energy, Vertices)
 
 contourLength = length(Position(1,:));
-p = SimpleMin(Energy(:, length(Energy)));
+p = SimpleMin(Energy(:, length(Energy(1,:))));
 
 contour = zeros(contourLength, 2);
 

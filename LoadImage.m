@@ -1,6 +1,6 @@
-function im = LoadImage()
+function im = LoadImage(imageName)
 % Read a png file into a Matlab Matrix
-im = imread('tongue.png');
+im = imread(imageName);
 
 % Convert the values to lie between 0 and 1
 im = double(im);

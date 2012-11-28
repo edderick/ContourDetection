@@ -14,8 +14,9 @@ for i = 1 : length(contour1(:, 1))
         
         vertices(j, i, 1) = x;
         vertices(j, i, 2) = y;
-        
+       
         intensities(j, i) = BasicSample(im, x, y);
+
     end
     
 end
