@@ -122,21 +122,30 @@ would make.
 \subsection{Dynamic Programming Search}
 I began by creating a simple dynamic programming algorithm based on the on in
 the slides provided. \em reference? \em This algorithm attempted to minimise
-intensity, to find the white pixels of the original image, and ensure
-continuity, to ensure that the line was actually a line. 
+intensity, finding the white pixels of the original image, and ensure
+continuity, producing a line. 
 
 The algorithm built up two dimensional energy and position matrices by finding
-the minimum energy required to get to each point, based on the minimums to get
-to the previous points. It then backtracked from the lowest intensity,
-producing a contour. I designed my implementation to be as modular as possible
-to enable easy debugging and extension.
+the minimum energy required to get to each point, based on the minimum energy to
+get to the previous points, and the energy at the point. When the matrices were
+full, a contour was produced by back-tracking over the position matrix. I
+designed my implementation to be as modular as possible to enable easy debugging
+and extension.
 
 Once I had a this solution working, I began extending it to implement the
 algorithm defined in the specification. \em reference? \em This required the
 energy and position matrices being expanded into the third dimension to
-represent all of the possible points that could be the next point in the line.  
+represent all of the possible points that could be the next point in the line.
+It also meant adding an extra level of looping to the algorithm as all
+possibilities of the next point had to be considered as well as the previous
+points. This more complex algorithm ensures that straight lines are 
+favoured.
 
 \section{Results}
+
+Both of the algorithms were able to produce a contour that matched the outline
+of the tongue. The output produced by the two algorithms can be seen in
+\em Appendix XYZ \em.
 
 \subsection{Scaling}
 
