@@ -14,7 +14,7 @@ for i = 1:iterations
     timing(i, 1) = divisions;
     
     tic
-    contour = SimplePA(divisions, im, contour1, contour2);
+    contour = SimpleDPA(divisions, im, contour1, contour2);
     timing(i, 2) = toc
     
 end

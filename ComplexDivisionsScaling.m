@@ -1,7 +1,7 @@
 SetUp
 
-iterations = 10;
-step = 5;
+iterations = 30;
+step = 2;
 
 timing = zeros(iterations, 2);
 
