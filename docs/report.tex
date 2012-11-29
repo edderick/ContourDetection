@@ -177,13 +177,47 @@ three points is. It would seem to be fairly instance specific as to the ideal
 value of lambda.
 
 \subsection{Initialisation}
+To test how robust the solution is to different initialisations, I began by
+switching the order of the two contours. I found that this produced exactly the
+same results as before. 
+
+Next I created a contour by removing points from the original contours until I
+was left with just 13 points. I found that this contour did follow the tongue
+for part of the image, but didn't pick up on the curve to the left of the
+contour. 
+
+I also attempted to initialise the algorithm using contours perpendicular to the
+original contours. As expected the simple algorithm was not able to cop with
+this and drew a line that didn't fit the contour at all, this can be seen in
+appendix TYP. However, I was surprised to find that the complex algorithm
+actually managed to follow the contour for a reasonable distance.
 
 \subsection{Different Images}
 I also ran the algorithm on different images. The first of these was an image of
-an aircrafts vapour trail (Appendix ABC).
+an aircrafts vapour trail (\em Appendix ABC \em), in this image the contour was
+oriented vertically, running from top to bottom. I found that the complex
+algorithm found the line easily. The simple algorithm was able to pick out the
+contour after I applied the low pass filter. I believe this is because the image
+is two shades of grey rather than black and white; this leads to energy values
+that don't have a great enough difference to influence the contour. 
 
-\em I tried a very jagged image to show that the smoothing function wasn't
-always applicable \em 
+I then tried a very jagged image of some stairs. I expected the algorithms to perform
+very poorly on this image because they are written to draw straight lines. For
+the simple algorithm, I was correct. As can be seen in \em Appendix 123 \em a
+contour was produces that was simply a straight line running through the middle
+of the stairs. For the complex algorithm, my assumptions were incorrect, it
+created a smooth curving line that followed the stairs well. This contour can be
+seen in \em Appendix LOL \em.  
+
+\subsection{Sampling Method}
+When generating the intensity matrix, the floating point values of the
+interpolated points do not match exactly with the integer pixels of the image.
+As mentioned above I implemented two different schemes for determining the
+intensity. The first method, rounding, worked well for both algorithms. I
+predicted that my \em MultiSampling \em method would produce better results as
+it took into consideration the intensity of a region so wouldn't be thrown off
+my anomalous pixels. I found that although it did produce slightly different
+contours, I wasn't able to decide if they were quantitatively better. 
 
 \section{Conclusion}
 
@@ -193,6 +227,16 @@ always applicable \em
 		Flickr Image of a Vapour Trail, \\
 		http://www.flickr.com/photos/charliebrewer/484937808/.
 
+	\bibitem{img2}
+		Flicke Image of Stairs \\
+		http://www.flickr.com/photos/judepics/2371279935/
+
 \end{thebibliography}
+
+\onecolumn
+\appendix
+\appendixpage
+
+I am an appendix?
 
 \end{document}
