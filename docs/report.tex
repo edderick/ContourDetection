@@ -4,7 +4,7 @@
 % This is a simple template for a LaTeX document using the "article" class.
 % See "book", "report", "letter" for other types of document.
 
-\documentclass[11pt,twocolumn]{article} % use larger type; default would be 10pt
+\documentclass[12pt,twocolumn]{article} % use larger type; default would be 10pt
 
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
 \usepackage{amsmath}
@@ -17,9 +17,8 @@
 % provide. See the LaTeX Companion or other references for full information.
 
 %%% PAGE DIMENSIONS
-\usepackage{geometry} % to change the page dimensions
+\usepackage[top=2.4cm, bottom=2.4cm, left=2.5cm, right=2.5cm]{geometry}
 \geometry{a4paper} % or letterpaper (US) or a5paper or....
-\geometry{margin=0.75in} % for example, change the margins to 2 inches all round
 % \geometry{landscape} % set up the page for landscape
 %   read geometry.pdf for detailed page layout information
 
@@ -74,7 +73,7 @@
 
 Dynamic programming can be used to perform contour detection in a feasible
 period of time. In this project, a dynamic programming algorithm was created for
-exracting a tongue from an X-ray image. The algorithm was tested to see how it
+exracting a tongue from an ultrasound image. The algorithm was tested to see how it
 scales with the number of divisions, how it performs with varying lambda and how
 it performed of different images. 
 
@@ -119,7 +118,7 @@ to detect the line. I also added a low-pass filter that could be configured to
 drop all pixels below a certain intensity.  
 
 \subsection{Dynamic Programming Search}
-I began by creating a simple dynamic programming algorithm based on the on in
+I began by creating a simple dynamic programming algorithm based on the one in
 the slides provided. \em reference? \em This algorithm attempted to minimise
 intensity - finding the white pixels of the original image, and ensure
 continuity - producing a line. 
@@ -150,6 +149,14 @@ the previous points. This more complex algorithm ensures that straight lines are
 favoured.
 
 \section{Results}
+
+\begin{figure}
+\centering
+\includegraphics[width=\columnwidth]{NotInverted.png}
+\caption{The contour from the complex algorithm overlaid on the original image}
+\end{figure}
+
+
 Both of the algorithms were able to produce a contour that matched the outline
 of the tongue. The output produced by the two algorithms can be seen in
 \em Appendix XYZ \em. As can be seen, the line produced by the more complex
@@ -181,10 +188,10 @@ To test how robust the solution is to different initialisations, I began by
 switching the order of the two contours. I found that this produced exactly the
 same results as before. 
 
-Next I created a contour by removing points from the original contours until I
-was left with just 13 points. I found that this contour did follow the tongue
-for part of the image, but didn't pick up on the curve to the left of the
-contour. 
+Next I created a contour (\em shown in Appendix FFF\em) by removing points from
+the original contours until I was left with just 13 points. I found that this
+contour did follow the tongue for part of the image, but didn't pick up on the
+curve to the left of the contour. 
 
 I also attempted to initialise the algorithm using contours perpendicular to the
 original contours. As expected the simple algorithm was not able to cop with
@@ -194,20 +201,20 @@ actually managed to follow the contour for a reasonable distance.
 
 \subsection{Different Images}
 I also ran the algorithm on different images. The first of these was an image of
-an aircrafts vapour trail (\em Appendix ABC \em), in this image the contour was
+an aircrafts vapour trail\cite{vapourImg} (\em Appendix ABC \em), in this image the contour was
 oriented vertically, running from top to bottom. I found that the complex
 algorithm found the line easily. The simple algorithm was able to pick out the
 contour after I applied the low pass filter. I believe this is because the image
 is two shades of grey rather than black and white; this leads to energy values
 that don't have a great enough difference to influence the contour. 
 
-I then tried a very jagged image of some stairs. I expected the algorithms to perform
-very poorly on this image because they are written to draw straight lines. For
-the simple algorithm, I was correct. As can be seen in \em Appendix 123 \em a
-contour was produces that was simply a straight line running through the middle
-of the stairs. For the complex algorithm, my assumptions were incorrect, it
-created a smooth curving line that followed the stairs well. This contour can be
-seen in \em Appendix LOL \em.  
+I then tried a very jagged image of some stairs\cite{stairsImg}. I expected the algorithms to
+perform very poorly on this image because they are written to draw straight
+lines. For the simple algorithm, I was correct. As can be seen in \em Appendix
+123 \em a contour was produces that was simply a straight line running through
+the middle of the stairs. For the complex algorithm, my assumptions were
+incorrect, it created a smooth curving line that followed the stairs well. This
+contour can be seen in \em Appendix LOL \em.  
 
 \subsection{Sampling Method}
 When generating the intensity matrix, the floating point values of the
@@ -227,11 +234,11 @@ algorithm that detects a contour in an image.
 
 \begin{thebibliography}{9}
 
-	\bibitem{img}
+	\bibitem{vapourImg}
 		Flickr Image of a Vapour Trail, \\
 		http://www.flickr.com/photos/charliebrewer/484937808/
 
-	\bibitem{img2}
+	\bibitem{stairsImg}
 		Flicke Image of Stairs \\
 		http://www.flickr.com/photos/judepics/2371279935/
 
@@ -240,6 +247,15 @@ algorithm that detects a contour in an image.
 \onecolumn
 \appendix
 \appendixpage
+
+\section{Search Space Extraction}
+
+\begin{center}
+\includegraphics[width=\textwidth]{SearchSpace.png}
+\end{center}
+
+This image shows how the search space was created by sampling from interpolated
+points on the image.
 
 \section{Dynamic Programming Algorithm Output}
 
@@ -256,7 +272,7 @@ has been inverted to show how the algorithm minimises the energy.
 \includegraphics[width=\textwidth]{ComplexContour.png}
 \end{center}
 
-This image was generated usign the complex dynamic programming algorithm.
+This image was generated using the complex dynamic programming algorithm.
 
 \section{Time Complexity Graphs}
 
@@ -272,7 +288,86 @@ This image was generated usign the complex dynamic programming algorithm.
 \includegraphics[width=\textwidth]{ComplexComplexity.png}
 \end{center}
 
+\section{Values of Lambda}
 
+\subsection{$\lambda = 0$}
+\begin{center}
+\includegraphics[width=\textwidth]{Lambda0.png}
+\end{center}
+
+\subsection{$\lambda = 0.25$}
+\begin{center}
+\includegraphics[width=\textwidth]{Lambda025.png}
+\end{center}
+
+\subsection{$\lambda = 0.5$}
+\begin{center}
+\includegraphics[width=\textwidth]{Lambda05.png}
+\end{center}
+
+\subsection{$\lambda = 0.75$}
+\begin{center}
+\includegraphics[width=\textwidth]{Lambda075.png}
+\end{center}
+
+\subsection{$\lambda = 1$}
+\begin{center}
+\includegraphics[width=\textwidth]{Lambda1.png}
+\end{center}
+
+\section{Different Initialisation Contours}
+
+\subsection{Simplfied Contour}
+\begin{center}
+\includegraphics[width=\textwidth]{SimpleInitialContour.png}
+\end{center}
+
+
+\subsection{Sideways Contour}
+\subsubsection{Simple Algorithm}
+\begin{center}
+\includegraphics[width=\textwidth]{SimpleSideways.png}
+\end{center}
+
+\subsubsection{Complex Algorithm}
+\begin{center}
+\includegraphics[width=\textwidth]{ComplexSideways.png}
+\end{center}
+
+\section{Different Images}
+
+\subsection{Vapour Trail}
+
+\subsubsection{Simple Algorithm, No Low Pass Filter}
+\begin{center}
+\includegraphics[width=\textwidth]{SimpleVapourNoLow.png}
+\end{center}
+
+
+\subsubsection{Simple Algorithm, Low Pass Filter}
+\begin{center}
+\includegraphics[width=\textwidth]{SimpleVapourLow.png}
+\end{center}
+
+
+\subsubsection{Complex Algorithm}
+\begin{center}
+\includegraphics[width=\textwidth]{ComplexVapour.png}
+\end{center}
+
+
+\subsection{Stairs}
+
+\subsubsection{Simple Algorithm}
+\begin{center}
+\includegraphics[width=\textwidth]{SimpleStairs.png}
+\end{center}
+
+
+\subsubsection{Complex Algorithm}
+\begin{center}
+\includegraphics[width=\textwidth]{ComplexStairs.png}
+\end{center}
 
 
 \end{document}
