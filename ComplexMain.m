@@ -1,3 +1,5 @@
+%Sets up and runs the complex dynamic programming algorithm.
+
 tic % Start Timer
 
 SetUp

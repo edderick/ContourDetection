@@ -1,22 +1,24 @@
-function [p, s] = ComplexPosition(intensities, Energy, v2, v3)
+function [p, s] = ComplexPosition(Intensities, Energy, V2, V3)
+%COMPLEXPOSITION The position function for the complex algorithm.
+%   Calculates the position value for the given vertices.
 
-% Used to find minimum
+% Used for finding minimum
 s = -1;
 
-for i = 1 : length(intensities(:, 1))
+for i = 1 : length(Intensities(:, 1))
+    v1 = [i, V2(2) - 1];
     
-        v1 = [i, v2(2) - 1];
-        
-        
-        this_s = Energy(v1(1), v1(2), v2(1)) + ComplexEnergy(intensities, v1, v2, v3);
-        
-        if s == -1
-            p = i;
-            s = this_s;
-        elseif this_s < s
-            p = i;
-            s = this_s;
-        end
-       
+    % Calculate energy required to get here
+    this_s = Energy(v1(1), v1(2), V2(1)) + ComplexEnergy(Intensities, v1, V2, V3);
+    
+    % If this is the first value
+    if s == -1
+        p = i;
+        s = this_s;
+        % If this is the smallest value so far
+    elseif this_s < s
+        p = i;
+        s = this_s;
+    end
 end
 end

@@ -1,10 +1,10 @@
-function ShowImage( im )
-%SHOWIMAGE Summary of this function goes here
-%   Detailed explanation goes here
+function ShowImage( Image )
+%SHOWIMAGE Draws the image to figure one.
+%   Draws a greyscale image to figure one. 
 
 % Display the image
 figure(1)
-imagesc(im)
+imagesc(Image)
 colormap(gray)
 axis square
 

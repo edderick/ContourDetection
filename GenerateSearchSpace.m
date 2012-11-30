@@ -1,24 +1,27 @@
-function [vertices, intensities] = GenerateSearchSpace(n, im, contour1, contour2)
+function [Vertices, Intensities] = GenerateSearchSpace(divisions, Image, Contour1, Contour2)
+%GENERATESEARCHSPACE Generates a search space.
+%   Using the paramaters provided, an matrix of intensities is produced that
+%   represents the image. A matrix of vertices is also returned to allow
+%   easy mapping back to image space.
 
-vertices = zeros(n, length(contour1(:, 1)), 2);
-intensities = zeros(n, length(contour1(:, 1)));
+Vertices = zeros(divisions, length(Contour1(:, 1)), 2);
+Intensities = zeros(divisions, length(Contour1(:, 1)));
 
 % Iterate through arrays calculating and plotting mid-points
-for i = 1 : length(contour1(:, 1))
-    dx = contour2(i,1) - contour1(i,1);
-    dy = contour2(i,2) - contour1(i,2);
+for i = 1 : length(Contour1(:, 1))
+    dx = Contour2(i,1) - Contour1(i,1);
+    dy = Contour2(i,2) - Contour1(i,2);
     
-    for j = 1 : n
-        x = contour1(i, 1) + j * (dx / (n + 1));
-        y = contour1(i, 2) + j * (dy / (n + 1));
+    for j = 1 : divisions
+        % Interpolate
+        x = Contour1(i, 1) + j * (dx / (divisions + 1));
+        y = Contour1(i, 2) + j * (dy / (divisions + 1));
         
-        vertices(j, i, 1) = x;
-        vertices(j, i, 2) = y;
-       
-        intensities(j, i) = BasicSample(im, x, y);
-
+        Vertices(j, i, 1) = x;
+        Vertices(j, i, 2) = y;
+        
+        Intensities(j, i) = BasicSample(Image, x, y);
+        
     end
-    
 end
-
 end

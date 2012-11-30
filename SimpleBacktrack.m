@@ -1,17 +1,17 @@
-function contour = SimpleBacktrack(Position, Energy, Vertices)
+function Contour = SimpleBacktrack(Position, Energy, Vertices)
+%SIMPLEBACKTRACK Produces a contour for simple dpa by backtracking.
+%   Uses backtracking to produce a contour for the simple dynamic
+%   programming algorthm.
 
 contourLength = length(Position(1,:));
-p = SimpleMin(Energy(:, length(Energy(1,:))));
+next_position = SimpleMin(Energy(:, length(Energy(1,:))));
 
-contour = zeros(contourLength, 2);
+Contour = zeros(contourLength, 2);
 
-for i =  contourLength : -1 : 1 
-    contour(i, 1) = Vertices(p, i, 1);
-    contour(i, 2) = Vertices(p, i, 2);
+for i =  contourLength : -1 : 1
+    Contour(i, 1) = Vertices(next_position, i, 1);
+    Contour(i, 2) = Vertices(next_position, i, 2);
     
-    p = Position(p, i);
+    next_position = Position(next_position, i);
 end
-
-
-
 end

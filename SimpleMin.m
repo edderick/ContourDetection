@@ -1,4 +1,4 @@
-function [ Position ] = SimpleMin( Array )
+function Position = SimpleMin( Array )
 %SIMPLEMIN Find the position of the minimum element
 %   Finds the index of the minimum element of the Array
 
@@ -16,4 +16,3 @@ for i = 1 : length(Array)
     end
 end
 end
-

@@ -1,3 +1,5 @@
+%Sets up and benchmarks the simple dynamic programming algorithm.
+
 SetUp
 
 iterations = 50;
@@ -19,6 +21,4 @@ for i = 1:iterations
     
 end
 
-
 PlotContour(timing, 'g-+');
-

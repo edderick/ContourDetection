@@ -4,17 +4,13 @@
 
 im = LoadImage('tongue.png');
 
-
-
+ShowImage(im);
 
 %Apply Low Pass filter
 %im = LowPassFilter(im, 0.7);
 
 % Invert Image 
 im =  1 - im;
-
-
-ShowImage(im);
 
 contour1 = load('init1.ctr');
 contour2 = load('init2.ctr');
