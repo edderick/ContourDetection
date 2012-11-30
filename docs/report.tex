@@ -4,13 +4,17 @@
 % This is a simple template for a LaTeX document using the "article" class.
 % See "book", "report", "letter" for other types of document.
 
-\documentclass[12pt,twocolumn]{article} % use larger type; default would be 10pt
+\documentclass[11pt,twocolumn]{article} % use larger type; default would be 10pt
 
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
 \usepackage{amsmath}
 \usepackage{epsfig}
 \usepackage{listings}
 \usepackage{appendix}
+
+\usepackage{url}
+\usepackage{hyperref}
+
 
 %%% Examples of Article customizations
 % These packages are optional, depending whether you want the features they 
@@ -57,8 +61,8 @@
 
 %%% The "real" document content comes below...
 
-\title{COMP3032 Intelligent Altgorithms Coursework}
-\author{Edward Seabrook 
+\title{COMP3032 Intelligent Algorithms Coursework}
+\author{\href{ejfs1g10@ecs.soton.ac.uk}{Edward JF Seabrook} 
 \\ Electronics and Computer Science 
 \\ University of Southampton }
 %\date{} % Activate to display a given date or no date (if empty),
@@ -73,7 +77,7 @@
 
 Dynamic programming can be used to perform contour detection in a feasible
 period of time. In this project, a dynamic programming algorithm was created for
-exracting a tongue from an ultrasound image. The algorithm was tested to see how it
+extracting a tongue from an ultrasound image. The algorithm was tested to see how it
 scales with the number of divisions, how it performs with varying lambda and how
 it performed of different images. 
 
@@ -92,7 +96,7 @@ efficient.
 For this project, I chose to use Matlab as it provides good matrix and vector
 manipulation functionality. When approaching the task, I broke it up into
 several scripts and functions, each with a single clearly defined purpose, to
-ensure clarity and ease of resuse.  
+ensure clarity and ease of reuse.  
 
 \subsection{Search Space Extraction}
 In my Matlab code, the function \em GenerateSearchSpace \em takes in a number of
@@ -104,7 +108,9 @@ from search space.
 The function then loops over each point in the contours. For each point on
 the first contour, the distance from the corresponding point on the second
 contour is calculated. This distance is then used to interpolate the correct
-number of points to sample between the two lines. 
+number of points to sample between the two lines. Example 
+points can be seen in Appendix \ref{SearchSpaceExt}.
+
 
 For each of these interpolated points, a sample is taken. Initially I
 implemented a function \em BasicSample \em which simply rounded the point to
@@ -119,7 +125,7 @@ drop all pixels below a certain intensity.
 
 \subsection{Dynamic Programming Search}
 I began by creating a simple dynamic programming algorithm based on the one in
-the slides provided. \em reference? \em This algorithm attempted to minimise
+the slides provided\cite{slides}. This algorithm attempted to minimise
 intensity - finding the white pixels of the original image, and ensure
 continuity - producing a line. 
 
@@ -139,7 +145,7 @@ position matrix. I designed my implementation to be as modular as possible to
 enable easy debugging and extension.
 
 Once I had a this solution working, I began extending it to implement the
-algorithm defined in the specification. \em reference? \em This required the
+algorithm defined in the specification\cite{spec}. This required the
 energy and position matrices being expanded into the third dimension to
 represent all of the possible points that could be the next point in the line.
 The energy and position functions each gained an extra parameter, the next point
@@ -159,17 +165,17 @@ favoured.
 
 Both of the algorithms were able to produce a contour that matched the outline
 of the tongue. The output produced by the two algorithms can be seen in
-\em Appendix XYZ \em. As can be seen, the line produced by the more complex
+Appendix \ref{algorithms}. As can be seen, the line produced by the more complex
 algorithm gave a smoother line than the simple algorithm.
 
 \subsection{Scaling}
 I ran the algorithm for a range of number of divisions (M), I found that the
 algorithm doesn't scale well. As the numbers get larger, the amount of time
-taken quickly becomes infeasible. Emperically executions took severy minutes to
-complete, theoretically they would soon take years to halt. This is expected
+taken quickly becomes infeasible. Empirically executions took several minutes to
+complete, theoretically they would soon take hours to halt. This is expected
 since the algorithm contains three nested loops whose execution time is
 proportional to the size of M. The expected time complexity is $O(n^3)$, the
-graph seen in \em Appendix IJK \em appears to agree with the theory. 
+graph seen in Appendix \ref{complexityGraph} appears to agree with the theory. 
 
 \subsection{Varying Lambda}
 Varying the value of lambda affects how much influence the parts of the
@@ -177,7 +183,7 @@ algorithm have on the energy associated with a point. If lambda is small, then
 the energy at a given point is most important; if it is large then the
 smoothness of the line is more important.
 
-\em Appendix LMNOP \em show various levels of lambda. When lambda is zero, the
+Images in Appendix \ref{lambda} show various levels of lambda. When lambda is zero, the
 energy function is simply the intensity of the associated pixel. When lambda is
 one, the energy is based entirely on how straight the contour formed by the
 three points is. It would seem to be fairly instance specific as to the ideal
@@ -188,33 +194,36 @@ To test how robust the solution is to different initialisations, I began by
 switching the order of the two contours. I found that this produced exactly the
 same results as before. 
 
-Next I created a contour (\em shown in Appendix FFF\em) by removing points from
+Next I created a contour (shown in Appendix \ref{simpleContour}) by removing points from
 the original contours until I was left with just 13 points. I found that this
 contour did follow the tongue for part of the image, but didn't pick up on the
 curve to the left of the contour. 
 
 I also attempted to initialise the algorithm using contours perpendicular to the
-original contours. As expected the simple algorithm was not able to cop with
-this and drew a line that didn't fit the contour at all, this can be seen in
-appendix TYP. However, I was surprised to find that the complex algorithm
-actually managed to follow the contour for a reasonable distance.
+original contours. As expected the simple algorithm was not able to cope with
+this and drew a line that didn't fit the contour at all. However, I was 
+surprised to find that the complex algorithm actually managed to follow the 
+contour for a reasonable distance. These results can be seen in Appendix
+\ref{sidewaysContour}
 
 \subsection{Different Images}
 I also ran the algorithm on different images. The first of these was an image of
-an aircrafts vapour trail\cite{vapourImg} (\em Appendix ABC \em), in this image the contour was
-oriented vertically, running from top to bottom. I found that the complex
-algorithm found the line easily. The simple algorithm was able to pick out the
-contour after I applied the low pass filter. I believe this is because the image
-is two shades of grey rather than black and white; this leads to energy values
-that don't have a great enough difference to influence the contour. 
+an aircrafts vapour trail\cite{vapourImg} (Appendix \ref{vapour}), in this image
+the contour was oriented vertically, running from top to bottom. I found that
+the complex algorithm found the line easily. The simple algorithm was able to
+pick out the contour after I applied the low pass filter. I believe this is
+because the image is two shades of grey rather than black and white; this leads
+to energy values that don't have a great enough difference to influence the
+contour. 
 
-I then tried a very jagged image of some stairs\cite{stairsImg}. I expected the algorithms to
-perform very poorly on this image because they are written to draw straight
-lines. For the simple algorithm, I was correct. As can be seen in \em Appendix
-123 \em a contour was produces that was simply a straight line running through
-the middle of the stairs. For the complex algorithm, my assumptions were
-incorrect, it created a smooth curving line that followed the stairs well. This
-contour can be seen in \em Appendix LOL \em.  
+I then tried a very jagged image of some stairs\cite{stairsImg}. I expected the
+algorithms to perform very poorly on this image because they are written to draw
+straight lines. For the simple algorithm, I was correct. As can be seen in
+Appendix \ref{simpleStairs} a contour was produces that was simply a straight
+line running through the middle of the stairs. For the complex algorithm, my
+assumptions were incorrect, it created a smooth curving line, containing no
+sharp turns, that followed the stairs well. This contour can be seen in Appendix
+\ref{complexStairs}.  
 
 \subsection{Sampling Method}
 When generating the intensity matrix, the floating point values of the
@@ -229,18 +238,37 @@ contours, I wasn't able to decide if they were quantitatively better.
 \section{Conclusion}
 During this project I have gained a huge amount of experience. I was able to
 work with MATLAB for the first time and I now understand how dynamic programming
-can be used to detect contours. I feel that I was successfull in implementing an
+can be used to detect contours. I feel that I was successful in implementing an
 algorithm that detects a contour in an image. 
+
+If I were to extend the project, I would investigate either detecting closed 
+contours or detecting multiple contours in a single image. It might also be
+interesting to benchmark how slow the brute force method would be to get a
+better understanding of how efficient this method is. 
+
+
 
 \begin{thebibliography}{9}
 
 	\bibitem{vapourImg}
 		Flickr Image of a Vapour Trail, \\
-		http://www.flickr.com/photos/charliebrewer/484937808/
+		Charlie Brewer,\\
+		\url{http://www.flickr.com/photos/charliebrewer/484937808/}
 
 	\bibitem{stairsImg}
-		Flicke Image of Stairs \\
-		http://www.flickr.com/photos/judepics/2371279935/
+		Flickr Image of Stairs, \\
+		judepics, \\
+		\url{http://www.flickr.com/photos/judepics/2371279935/}
+
+	\bibitem{slides}
+		Dynamic Programming Slides, \\
+		Steve Gunn, \\
+	\url{https://secure.ecs.soton.ac.uk/notes/comp3032/Lectures/DP.pdf}
+
+	\bibitem{spec}
+		Coursework Specification, \\
+		Steve Gunn, \\
+	\url{https://secure.ecs.soton.ac.uk/notes/comp3032/Assignment/ICE.pdf}
 
 \end{thebibliography}
 
@@ -249,7 +277,7 @@ algorithm that detects a contour in an image.
 \appendixpage
 
 \section{Search Space Extraction}
-
+\label{SearchSpaceExt}
 \begin{center}
 \includegraphics[width=\textwidth]{SearchSpace.png}
 \end{center}
@@ -258,6 +286,8 @@ This image shows how the search space was created by sampling from interpolated
 points on the image.
 
 \section{Dynamic Programming Algorithm Output}
+
+\label{algorithms}
 
 \subsection{Simple Algorithm}
 \begin{center}
@@ -282,92 +312,144 @@ This image was generated using the complex dynamic programming algorithm.
 \includegraphics[width=\textwidth]{SimpleComplexity.png}
 \end{center}
 
+A graph of Number of Divisions (x) vs. Time Taken in Seconds (y) for the simple
+algorithm. 
+MATLAB's basic fit function suggests that this graph is $n^2$.
+
 \subsection{Complex Algorithm}
+
+\label{complexityGraph}
 
 \begin{center}
 \includegraphics[width=\textwidth]{ComplexComplexity.png}
 \end{center}
 
+A graph of Number of Divisions (x) vs. Time Taken in Seconds (y) for the complex
+algorithm. 
+MATLAB's basic fit function suggests that this graph is $n^3$.
+
 \section{Values of Lambda}
+
+\label{lambda}
 
 \subsection{$\lambda = 0$}
 \begin{center}
 \includegraphics[width=\textwidth]{Lambda0.png}
 \end{center}
 
+When lambda is zero, the energy function simply returns the lowest intensity.
+
 \subsection{$\lambda = 0.25$}
 \begin{center}
 \includegraphics[width=\textwidth]{Lambda025.png}
 \end{center}
+
+When lambda is $0.25$, the energy function is influenced more by the intensity
+that the smoothness.
 
 \subsection{$\lambda = 0.5$}
 \begin{center}
 \includegraphics[width=\textwidth]{Lambda05.png}
 \end{center}
 
+When lambda is $0.5$ the energy function is influenced equally by the intensity
+and the smoothness. 
+
 \subsection{$\lambda = 0.75$}
 \begin{center}
 \includegraphics[width=\textwidth]{Lambda075.png}
 \end{center}
+
+When lambda is $0.75$ the energy function is influences more by the smoothness
+than the intensity. 
 
 \subsection{$\lambda = 1$}
 \begin{center}
 \includegraphics[width=\textwidth]{Lambda1.png}
 \end{center}
 
+When lambda is one, the energy function simply returns a straight line. 
+
 \section{Different Initialisation Contours}
 
+
 \subsection{Simplfied Contour}
+\label{simpleContour}
+
 \begin{center}
 \includegraphics[width=\textwidth]{SimpleInitialContour.png}
 \end{center}
 
+An image showing the complex algorithm run with a contour containing fewer
+points that before. 
 
 \subsection{Sideways Contour}
+\label{sidewaysContour}
+
 \subsubsection{Simple Algorithm}
+\label{simpleSideways}
 \begin{center}
 \includegraphics[width=\textwidth]{SimpleSideways.png}
 \end{center}
 
+An image showing the output of the simple algorithm on a sideways initial
+contour.
+
 \subsubsection{Complex Algorithm}
+\label{complexSideways}
 \begin{center}
 \includegraphics[width=\textwidth]{ComplexSideways.png}
 \end{center}
 
+An image showing the output of the complex algorithm on a sideways initial
+contour.
+
 \section{Different Images}
 
 \subsection{Vapour Trail}
-
+\label{vapour}
 \subsubsection{Simple Algorithm, No Low Pass Filter}
 \begin{center}
 \includegraphics[width=\textwidth]{SimpleVapourNoLow.png}
 \end{center}
 
+An image showing the contour produced by the simple algorithm on an image of an
+aircrafts vapour trail, without a low pass filter.
 
 \subsubsection{Simple Algorithm, Low Pass Filter}
 \begin{center}
 \includegraphics[width=\textwidth]{SimpleVapourLow.png}
 \end{center}
 
+An image showing the contour produced by the simple algorithm on an image of an
+aircrafts vapour trail, with a low pass filter.
 
 \subsubsection{Complex Algorithm}
 \begin{center}
 \includegraphics[width=\textwidth]{ComplexVapour.png}
 \end{center}
 
+An image showing the contour produced by the complex algorithm on an image of an
+aircrafts vapour trail.
 
 \subsection{Stairs}
 
 \subsubsection{Simple Algorithm}
+\label{simpleStairs}
 \begin{center}
 \includegraphics[width=\textwidth]{SimpleStairs.png}
 \end{center}
 
+An image showing the contour produced by the simple algorithm on an image of
+some stairs. 
 
 \subsubsection{Complex Algorithm}
+\label{complexStairs}
 \begin{center}
 \includegraphics[width=\textwidth]{ComplexStairs.png}
 \end{center}
 
+An image showing the contour produced by the complex algorithm on an image of
+some stairs. 
 
 \end{document}
