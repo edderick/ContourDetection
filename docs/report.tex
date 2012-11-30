@@ -79,7 +79,7 @@ Dynamic programming can be used to perform contour detection in a feasible
 period of time. In this project, a dynamic programming algorithm was created for
 extracting a tongue from an ultrasound image. The algorithm was tested to see how it
 scales with the number of divisions, how it performs with varying lambda and how
-it performed of different images. 
+it copes with different images. 
 
 		\end{abstract}
 	\end{@twocolumnfalse}
@@ -93,28 +93,27 @@ method of evaluating all possible contours, dynamic programming is very
 efficient.
 
 \section{Method}
-For this project, I chose to use Matlab as it provides good matrix and vector
-manipulation functionality. When approaching the task, I broke it up into
-several scripts and functions, each with a single clearly defined purpose, to
-ensure clarity and ease of reuse.  
+For this project, I chose to use MATLAB as it provides good matrix and vector
+manipulation functionality, which is essential for this task. When approaching
+the problem, I broke it up into several scripts and functions, each with a single
+clearly defined purpose, this helped to ensure clarity and ease of reuse.  
 
 \subsection{Search Space Extraction}
-In my Matlab code, the function \em GenerateSearchSpace \em takes in a number of
+In my MATLAB code, the function \em GenerateSearchSpace \em takes in a number of
 divisions, an image and two contours. It returns a matrix of vertices and a
-matrix of intensities. This differs slightly from the original specification,
+matrix of intensities. This differs slightly from the original specification;
 but the matrix of vertices offers an easy way to convert back to image space
 from search space. 
 
-The function then loops over each point in the contours. For each point on
-the first contour, the distance from the corresponding point on the second
-contour is calculated. This distance is then used to interpolate the correct
-number of points to sample between the two lines. Example 
-points can be seen in Appendix \ref{SearchSpaceExt}.
-
+The function loops over each point in the contours. For each point on the first
+contour, the distance to the corresponding point on the second contour is
+calculated. This distance is then used to interpolate the correct number of
+points between the two lines. Example points can be seen in Appendix
+\ref{SearchSpaceExt}.
 
 For each of these interpolated points, a sample is taken. Initially I
-implemented a function \em BasicSample \em which simply rounded the point to
-the nearest integer an used the value of image at this pixel. I later extended
+implemented a function \em BasicSample \em which simply rounds the point to
+the nearest integer an uses the value of image at this pixel. I later extended
 this by creating a function \em MultiSample \em which was loosely based on a
 Gaussian sampling and sampled the pixels surrounding the rounded pixel with
 weights proportional to the distance from the point.
@@ -125,15 +124,15 @@ drop all pixels below a certain intensity.
 
 \subsection{Dynamic Programming Search}
 I began by creating a simple dynamic programming algorithm based on the one in
-the slides provided\cite{slides}. This algorithm attempted to minimise
-intensity - finding the white pixels of the original image, and ensure
+the slides provided\cite{slides}. This algorithm attempts to minimise
+intensity - finding the white pixels of the original image, and ensures
 continuity - producing a line. 
 
 I wrote an energy function based exactly on the slides, it takes in the matrix
 of intensities (to allow it to use the intensity for each point) and two points,
 and returns a scalar energy value. I created a position function in a similar
 manner, this function takes the intensities, the energy matrix and a single
-point, to produce a position and energy value, it makes use of the energy
+point, to produce a position and energy value. This function makes use of the energy
 function. The position function is then called from the main dynamic programming
 function, for each point.
 
@@ -147,7 +146,7 @@ enable easy debugging and extension.
 Once I had a this solution working, I began extending it to implement the
 algorithm defined in the specification\cite{spec}. This required the
 energy and position matrices being expanded into the third dimension to
-represent all of the possible points that could be the next point in the line.
+represent all of the possible points that could be the next point on the line.
 The energy and position functions each gained an extra parameter, the next point
 being considered.  It also meant adding an extra level of looping to the
 algorithm as all possibilities of the next point had to be considered as well as
@@ -164,9 +163,10 @@ favoured.
 
 
 Both of the algorithms were able to produce a contour that matched the outline
-of the tongue. The output produced by the two algorithms can be seen in
-Appendix \ref{algorithms}. As can be seen, the line produced by the more complex
-algorithm gave a smoother line than the simple algorithm.
+of the tongue. The output produced by the two algorithms can be seen in Appendix
+\ref{algorithms}. As can be seen, the line produced by the more complex
+algorithm gave a smoother line that followed the tongue better than the simple
+algorithm.
 
 \subsection{Scaling}
 I ran the algorithm for a range of number of divisions (M), I found that the
@@ -180,24 +180,24 @@ graph seen in Appendix \ref{complexityGraph} appears to agree with the theory.
 \subsection{Varying Lambda}
 Varying the value of lambda affects how much influence the parts of the
 algorithm have on the energy associated with a point. If lambda is small, then
-the energy at a given point is most important; if it is large then the
+the intensity at a given point is most important; if it is large then the
 smoothness of the line is more important.
 
 Images in Appendix \ref{lambda} show various levels of lambda. When lambda is zero, the
 energy function is simply the intensity of the associated pixel. When lambda is
 one, the energy is based entirely on how straight the contour formed by the
-three points is. It would seem to be fairly instance specific as to the ideal
-value of lambda.
+three points is. The ideal value of lambda is likely to vary from contour to
+contour.
 
 \subsection{Initialisation}
 To test how robust the solution is to different initialisations, I began by
 switching the order of the two contours. I found that this produced exactly the
 same results as before. 
 
-Next I created a contour (shown in Appendix \ref{simpleContour}) by removing points from
-the original contours until I was left with just 13 points. I found that this
-contour did follow the tongue for part of the image, but didn't pick up on the
-curve to the left of the contour. 
+Next I created a contour (shown in Appendix \ref{simpleContour}) by removing
+points from the original contours until I was left with just 13 points. I found
+that this contour did follow the tongue for part of the image, but didn't pick
+up on the curve to the left of the contour. 
 
 I also attempted to initialise the algorithm using contours perpendicular to the
 original contours. As expected the simple algorithm was not able to cope with
@@ -239,13 +239,13 @@ contours, I wasn't able to decide if they were quantitatively better.
 During this project I have gained a huge amount of experience. I was able to
 work with MATLAB for the first time and I now understand how dynamic programming
 can be used to detect contours. I feel that I was successful in implementing an
-algorithm that detects a contour in an image. 
+algorithm that detects a contour in an image, and I obtained results that showed
+many surprising phenomena. 
 
 If I were to extend the project, I would investigate either detecting closed 
 contours or detecting multiple contours in a single image. It might also be
 interesting to benchmark how slow the brute force method would be to get a
 better understanding of how efficient this method is. 
-
 
 
 \begin{thebibliography}{9}
