@@ -21,7 +21,7 @@
 % provide. See the LaTeX Companion or other references for full information.
 
 %%% PAGE DIMENSIONS
-\usepackage[top=2.4cm, bottom=2.4cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage[top=2.4cm, bottom=2.4cm, left=2.3cm, right=2.3cm]{geometry}
 \geometry{a4paper} % or letterpaper (US) or a5paper or....
 % \geometry{landscape} % set up the page for landscape
 %   read geometry.pdf for detailed page layout information
@@ -235,6 +235,32 @@ it took into consideration the intensity of a region so wouldn't be thrown off
 by anomalous pixels. I found that although it did produce slightly different
 contours, I wasn't able to decide if they were quantitatively better. 
 
+\subsection{Optimisation}
+The MATLAB programs that I had written took a very long time to complete,
+executions for 50 divisions were taking up to two minutes. At
+first I though that this was due to the time complexity, but after a quick
+calculation I realised that it should be much quicker. I realised that making
+function calls in MATLAB is actually very expensive. Inlining all of my
+functions made the code run much faster, my code went from taking an average of
+thirty seconds to complete to just nine. I believe this behavior is a side
+effect of the way that MATLAB is interpreted. 
+
+I felt that it would still be possible to make my algorithm faster. I targeted
+the deepest loop in my program as this is where the program was spending the
+vast majority of its time. I found that MATLAB's Matrix and Vector operations
+were actually quite slow. By replacing these operations with normal arithmetic
+where possible, and moving all calculations into the outermost loop possible, I
+was able to reduce the execution time to under one second.
+
+The results of my optimisation can be seen in Appendix \ref{optimised}. With
+these new results, I decided to confirm the time complexity by taking logarithms
+of the axes. Appendix \ref{loglog} shows this graph, with a gradient of three,
+confirming the time complexity as $O(n^3)$.
+
+The code that I wrote for the optimisation is very unreadable and doesn't adhere
+to good programming practice. I believe that had I written this program in a
+compiled language, I wouldn't have had these problems.
+
 \section{Conclusion}
 During this project I have gained a huge amount of experience. I was able to
 work with MATLAB for the first time and I now understand how dynamic programming
@@ -328,23 +354,27 @@ A graph of Number of Divisions (x) vs. Time Taken in Seconds (y) for the complex
 algorithm. 
 MATLAB's basic fit function suggests that this graph is $n^3$.
 
-\subsection{Optimized Complex Algorithm}
+\subsection{Optimised Complex Algorithm}
+
+\label{optimised}
 
 \begin{center}
 \includegraphics[width=\textwidth]{OptimizedComplexity.png}
 \end{center}
 
 A graph of Number of Divisions (x) vs. Time Taken in Seconds (y) for the
-optimized version of the complex algorithm.
+optimised version of the complex algorithm.
 
-\subsection{Optimized Complex Algorithm's Logarithms}
+\subsection{Optimised Complex Algorithm's Logarithms}
+
+\label{loglog}
 
 \begin{center}
 \includegraphics[width=\textwidth]{loglog.png}
 \end{center}
 
 A graph of the log of the Number of Divisions (x) vs. the log of Time Taken in
-Seconds (y) for the optimized version of the complex algorithm. This graph shows
+Seconds (y) for the optimised version of the complex algorithm. This graph shows
 a line with a gradient of approximately 3, confirming that the time complexity
 is $O(n^3)$.
 
