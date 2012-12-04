@@ -21,7 +21,7 @@
 % provide. See the LaTeX Companion or other references for full information.
 
 %%% PAGE DIMENSIONS
-\usepackage[top=2.4cm, bottom=2.4cm, left=2.3cm, right=2.3cm]{geometry}
+\usepackage[top=2.2cm, bottom=2cm, left=2cm, right=2.2cm]{geometry}
 \geometry{a4paper} % or letterpaper (US) or a5paper or....
 % \geometry{landscape} % set up the page for landscape
 %   read geometry.pdf for detailed page layout information
@@ -46,6 +46,7 @@
 \lhead{}\chead{}\rhead{}
 \lfoot{}\cfoot{\thepage}\rfoot{}
 
+
 %%% SECTION TITLE APPEARANCE
 \usepackage{sectsty}
 \allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf)
@@ -56,6 +57,7 @@
 \usepackage[titles,subfigure]{tocloft} % Alter the style of the ToC
 \renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
 \renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
 
 %%% END Article customizations
 
@@ -75,11 +77,11 @@
 		\maketitle
 		\begin{abstract}
 
-Dynamic programming can be used to perform contour detection in a feasible
-period of time. In this project, a dynamic programming algorithm was created for
-extracting a tongue from an ultrasound image. The algorithm was tested to see how it
-scales with the number of divisions, how it performs with varying lambda and how
-it copes with different images. 
+In this project, a dynamic programming algorithm was created for extracting a
+tongue from an ultrasound image. The algorithm was tested to see how it scales
+with the number of divisions, tolerance to different initialisation contours,
+how it performs with varying lambda and how it copes with different images. The
+algorithm was also extended to deal with  
 
 		\end{abstract}
 	\end{@twocolumnfalse}
@@ -95,8 +97,8 @@ efficient.
 \section{Method}
 For this project, I chose to use MATLAB as it provides good matrix and vector
 manipulation functionality, which is essential for this task. When approaching
-the problem, I broke it up into several scripts and functions, each with a single
-clearly defined purpose, this helped to ensure clarity and ease of reuse.  
+the problem, I broke it up into several scripts and functions, each with a
+single clearly defined purpose, this helped to ensure clarity and ease of reuse.  
 
 \subsection{Search Space Extraction}
 In my MATLAB code, the function \em GenerateSearchSpace \em takes in a number of
@@ -153,15 +155,23 @@ algorithm as all possibilities of the next point had to be considered as well as
 the previous points. This more complex algorithm ensures that straight lines are
 favoured.
 
+\subsection{Closed Contours}
+The paper by S. Gunn and M. Nixon describes a method that can be used to
+efficiently detect a closed contour, using a simple extension to the DPA search\cite{closedContours}. 
+The technique works by running the algorithm  twice on
+the image - the first run is used to determine a start and finishing point for
+the second run. The end points for the second run are set to the mid points of
+the first line. 
+
+I implemented this algorithm using my optimised dynamic programming algorithm. I
+simply ran the algorithm twice over the image with a pair of circular contours.
+The first run, shown in Appendix \ref{partOne} produced an open contour.
+To fix the starting point, I set the position matrix to point to the point and
+the energy matrix to Infinity, except for the route that used the correct point.
+To fix the end point, I started the backtracking off at that point. To close the
+contour, I created an extra point at the end the same as the start point.
+
 \section{Results}
-
-\begin{figure}
-\centering
-\includegraphics[width=\columnwidth]{NotInverted.png}
-\caption{The contour from the complex algorithm overlaid on the original image}
-\end{figure}
-
-
 Both of the algorithms were able to produce a contour that matched the outline
 of the tongue. The output produced by the two algorithms can be seen in Appendix
 \ref{algorithms}. As can be seen, the line produced by the more complex
@@ -236,30 +246,38 @@ by anomalous pixels. I found that although it did produce slightly different
 contours, I wasn't able to decide if they were quantitatively better. 
 
 \subsection{Optimisation}
-The MATLAB programs that I had written took a very long time to complete,
-executions for 50 divisions were taking up to two minutes. At
-first I though that this was due to the time complexity, but after a quick
-calculation I realised that it should be much quicker. I realised that making
-function calls in MATLAB is actually very expensive. Inlining all of my
-functions made the code run much faster, my code went from taking an average of
-thirty seconds to complete to just nine. I believe this behavior is a side
-effect of the way that MATLAB is interpreted. 
+The programs took a very long time to complete, executions of 50 divisions
+taking up to two minutes. After a quick time complexity calculation I realised
+they should be much quicker. I realised that making function calls in MATLAB is
+very expensive. Inlining all of my functions made the code run much faster, my
+code went from an average of thirty seconds to complete to just nine. I believe
+this behavior is a due to the way that MATLAB is interpreted. 
 
-I felt that it would still be possible to make my algorithm faster. I targeted
-the deepest loop in my program as this is where the program was spending the
-vast majority of its time. I found that MATLAB's Matrix and Vector operations
-were actually quite slow. By replacing these operations with normal arithmetic
-where possible, and moving all calculations into the outermost loop possible, I
-was able to reduce the execution time to under one second.
+By targeting the deepest loop in my program, the place where most of the
+execution time is spent, I was able to speed my algorithms up even more. I found
+that MATLAB's Matrix and Vector operations were slow. By replacing these
+operations with normal arithmetic where possible, and moving all calculations
+into the outermost loop possible, I was able to reduce the execution time to
+under one second.
 
 The results of my optimisation can be seen in Appendix \ref{optimised}. With
 these new results, I decided to confirm the time complexity by taking logarithms
 of the axes. Appendix \ref{loglog} shows this graph, with a gradient of three,
 confirming the time complexity as $O(n^3)$.
 
-The code that I wrote for the optimisation is very unreadable and doesn't adhere
-to good programming practice. I believe that had I written this program in a
-compiled language, I wouldn't have had these problems.
+The code that I wrote for the optimisation is fairly unreadable and doesn't 
+adhere to good programming practise. I hypothesise that had I written this program 
+in a compiled language, I wouldn't have had these problems.
+
+\subsection{Closed Contours}
+Using the method described above, I was able to detect some simple closed
+contours. I began by using a basic circle, as seen in Appendix
+\ref{fireContour}, this shape was easily detected by my algorithm. 
+
+To ensure that my algorithm was detecting a contour and not just drawing a
+smooth line, I went on to use the heart shape in Appendix \ref{heartContour}.
+This shape was detected successfully, but the fit wasn't quite as perfect as for
+the circle. 
 
 \section{Conclusion}
 During this project I have gained a huge amount of experience. I was able to
@@ -268,11 +286,15 @@ can be used to detect contours. I feel that I was successful in implementing an
 algorithm that detects a contour in an image, and I obtained results that showed
 many surprising phenomena. 
 
-If I were to extend the project, I would investigate either detecting closed 
-contours or detecting multiple contours in a single image. It might also be
-interesting to benchmark how slow the brute force method would be to get a
-better understanding of how efficient this method is. 
+If I were to extend the project, I would investigate detecting multiple contours
+and detecting edges rather than lines. I would also look into edge detection for
+colour images, since grey scale images can potentially represent two different colours
+identically. It might also be interesting to
+benchmark how slow the brute force method would be to get a better understanding
+of how efficient this method is. 
 
+%% REMOVE IF NEEDS BE %%
+\pagebreak
 
 \begin{thebibliography}{9}
 
@@ -288,12 +310,13 @@ better understanding of how efficient this method is.
 	
 	\bibitem{fireImg}
 		Photograph of Me With Fire,\\
-		Edward JF Seabrook
-
+		Edward JF Seabrook\\
+		\url{http://users.ecs.soton.ac.uk/ejfs1g10/burningSteelWool.jpg}
+	
 	\bibitem{heartImg}
 		Flickr Image of Heart \\
 		gustty,\\
-		http://www.flickr.com/photos/gustty/126606794/
+		\url{http://www.flickr.com/photos/gustty/126606794/}
 
 	\bibitem{slides}
 		Dynamic Programming Slides, \\
@@ -521,26 +544,35 @@ some stairs.
 \section{Closed Countours}
 
 \subsection{Initial Open Contour}
+
+\label{partOne}
+
 \begin{center}
 \includegraphics[width=\textwidth]{firePartOne.png}
 \end{center}
 
-The initial open contour used to calculate the end points for the closed
+An image shpwomg the initial open contour used to calculate the end points for the closed
 contour.
 
 \subsection{Simple Closed Contour}
+
+\label{fireContour}
+
 \begin{center}
 \includegraphics[width=\textwidth]{fireContour.png}
 \end{center}
 
-A simple closed contour.
+An image showing simple circular closed contour.
 
 \subsection{More Complex Closed Contour}
+
+\label{heartContour}
+
 \begin{center}
 \includegraphics[width=\textwidth]{heartContour.png}
 \end{center}
 
-A more complex closed contour.
+An image showing a more complex love heart shaped closed contour.
 
 
 \end{document}
