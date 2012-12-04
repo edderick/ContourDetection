@@ -4,7 +4,7 @@
 tic
 
 % Read in and display image
-im = imread('fire.png');
+im = imread('heart.png');
 im = double(im);
 imax = max(max(im));
 imin = min(min(im));
@@ -20,8 +20,8 @@ axis square
 % %%% Invert Image %%%
 im =  1 - im;
 
-Contour1 = load('circle1.ctr');
-Contour2 = load('circle2.ctr');
+Contour1 = load('circle3.ctr');
+Contour2 = load('circle4.ctr');
 
 hold on % Plot to same figure...
 plot(Contour1(:,1), Contour1(:,2), 'r', 'LineWidth', 2)
@@ -119,6 +119,7 @@ for i =  contourLength : -1 : halfContourLength +1
     
     temp = currentPosition;    
     currentPosition = Position(currentPosition, i, previousPosition);
+    oldPreviousPosition = previousPosition;
     previousPosition = temp;
 end
  
@@ -160,10 +161,10 @@ end
 Position = zeros(divisions, contourLength, divisions);
 Energy = zeros(divisions, contourLength, divisions);
 
-Position(:,2,:) = currentPosition;
+Position(:,2,:) = previousPosition;
 Energy(:,2,:) = Inf;
 
-Energy(currentPosition, 2, :) = 0;
+Energy(oldPreviousPosition, 2, :) = 0;
 
 % SECOND DPA LOOP %
 for col = 3 : contourLength
@@ -193,7 +194,7 @@ for col = 3 : contourLength
     end
 end
 
-startPosition = currentPosition;
+startPosition = previousPosition;
 
  % Backtrack
 finalContour = zeros(contourLength, 2);
@@ -206,11 +207,13 @@ for i =  contourLength : -1 : 1
     previousPosition = temp;
 end
 
+%Join ends
 finalContour(contourLength + 1, 1) = vertices(startPosition, 1, 1);
 finalContour(contourLength + 1, 2) = vertices(startPosition, 1, 2);
 
 plot(finalContour(:,1), finalContour(:,2), 'g-', 'LineWidth', 2)
 
-
+%plot(finalContour(1,1), finalContour(1,2), 'b-+', 'LineWidth', 2)
+%plot(finalContour(contourLength,1), finalContour(contourLength,2), 'y-+', 'LineWidth', 2)
 
 toc % Stop Timer
